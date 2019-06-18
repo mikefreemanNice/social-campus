@@ -1,5 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:social_campus/constant/constant.dart';
+import 'package:social_campus/router/application.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -8,9 +12,11 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage>
     with AutomaticKeepAliveClientMixin {
-  Size deviceSize;
   @override
   bool get wantKeepAlive => true;
+
+  ScrollController scrollController = new ScrollController();
+  bool showBarTitle = false;
 
   final List<String> sliderItems = [
     "assets/food/breakfast.jpg",
@@ -18,6 +24,35 @@ class MyHomePageState extends State<MyHomePage>
     "assets/food/meal.jpg",
     "assets/food/pancake.jpg",
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    addScrollListen();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  void addScrollListen() {
+    double showTitleOffset =150.0;
+
+    scrollController.addListener(() {
+      if (scrollController.offset < showTitleOffset && showBarTitle) {
+        setState(() {
+          showBarTitle = false;
+        });
+      } else if (scrollController.offset >= showTitleOffset &&
+          showBarTitle == false) {
+        setState(() {
+          showBarTitle = true;
+        });
+      }
+    });
+  }
 
   ///个人信息
   SliverList selfInfoList() {
@@ -94,7 +129,7 @@ class MyHomePageState extends State<MyHomePage>
             children: <Widget>[
               SingleChildScrollView(
                 padding: EdgeInsets.only(
-                    top: 40.0, left: 40.0, right: 40.0, bottom: 10.0),
+                    top: 40.0, left: 30.0, right: 30.0, bottom: 10.0),
                 child: Material(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
@@ -124,11 +159,11 @@ class MyHomePageState extends State<MyHomePage>
                             Expanded(
                               child: ListTile(
                                 title: Text(
-                                  "302",
+                                  "100+",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: Text("Posts".toUpperCase(),
+                                subtitle: Text("全校排名",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(fontSize: 12.0)),
                               ),
@@ -136,11 +171,11 @@ class MyHomePageState extends State<MyHomePage>
                             Expanded(
                               child: ListTile(
                                 title: Text(
-                                  "10.3K",
+                                  "1000+",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: Text("Followers".toUpperCase(),
+                                subtitle: Text("全市排名",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(fontSize: 12.0)),
                               ),
@@ -148,11 +183,11 @@ class MyHomePageState extends State<MyHomePage>
                             Expanded(
                               child: ListTile(
                                 title: Text(
-                                  "120",
+                                  "1000+",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: Text("Following".toUpperCase(),
+                                subtitle: Text("全国排名",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(fontSize: 12.0)),
                               ),
@@ -185,20 +220,36 @@ class MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    deviceSize = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: CustomScrollView(
+          controller: scrollController,
           physics: const BouncingScrollPhysics(),
           shrinkWrap: false,
           slivers: <Widget>[
             SliverAppBar(
+              title: !showBarTitle
+                  ? null
+                  : Text(Constant.tabData[0]['text'],
+                      style: TextStyle(color: Colors.white)),
               automaticallyImplyLeading: false,
-              floating: true,
-              backgroundColor: Colors.transparent,
-              flexibleSpace: profileHeader(context),
+              floating: false,
+              pinned: true,
+              leading: !showBarTitle
+                  ? null
+                  : Builder(builder: (context) {
+                      return IconButton(
+                        icon: Icon(Icons.dashboard, color: Colors.white),
+                        onPressed: () {
+                          // 打开抽屉菜单
+                          Application.mainPageKey.currentState.openDrawer();                        },
+                      );
+                    }),
+              backgroundColor: Theme.of(context).primaryColor,
+              flexibleSpace: FlexibleSpaceBar(
+                background: profileHeader(context),
+              ),
               expandedHeight: 230.0,
             ),
             selfInfoList(),

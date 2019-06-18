@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:social_campus/constant/constant.dart';
 import 'package:social_campus/router/application.dart';
 import 'package:social_campus/views/page/campus_message.dart';
 
+import 'add_post.dart';
 import 'common_drawer.dart';
 import 'my_home.dart';
 
@@ -12,12 +14,10 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
+  final mainPageKey = GlobalKey<ScaffoldState>();
   TabController tabController;
-  static List tabData = [
-    {'text': '我的', 'icon': Icon(Icons.home)},
-    {'text': '看看', 'icon': Icon(Icons.cloud_circle)}
-  ];
-  String appBarTitle = tabData[0]['text'];
+  static List tabData = Constant.tabData;
+  // String appBarTitle = tabData[0]['text'];
   List<Widget> myTabs = [];
 
   @override
@@ -28,9 +28,12 @@ class MainPageState extends State<MainPage>
       myTabs.add(new Tab(text: tabData[i]['text'], icon: tabData[i]['icon']));
     }
     tabController.addListener(() {
-      _onTabChange();
+      // if (tabController.previousIndex) {
+      //     Application.mainPageKey.currentState.openDrawer();
+      // }
     });
     Application.tabController = tabController;
+    Application.mainPageKey = mainPageKey;
   }
 
   @override
@@ -39,13 +42,13 @@ class MainPageState extends State<MainPage>
     super.dispose();
   }
 
-  void _onTabChange() {
-    if (this.mounted) {
-      this.setState(() {
-        appBarTitle = tabData[tabController.index]['text'];
-      });
-    }
-  }
+  // void _onTabChange() {
+  //   if (this.mounted) {
+  //     this.setState(() {
+  //       appBarTitle = tabData[tabController.index]['text'];
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +64,7 @@ class MainPageState extends State<MainPage>
       //   title: Text(appBarTitle,
       //       style: TextStyle( color: Colors.white)),
       // ),
+      key: mainPageKey,
       drawer: CommonDrawer(),
       body: TabBarView(
           controller: tabController,
@@ -72,7 +76,15 @@ class MainPageState extends State<MainPage>
           color: Colors.white,
         ),
         backgroundColor: Theme.of(context).primaryColor,
-        onPressed: null,
+        onPressed: () => Navigator.push(context, PageRouteBuilder(pageBuilder:
+                (BuildContext context, Animation animation,
+                    Animation secondaryAnimation) {
+              return new ScaleTransition(
+                scale: animation,
+                alignment: Alignment.bottomCenter,
+                child: AddPostPage(),
+              );
+            })),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(

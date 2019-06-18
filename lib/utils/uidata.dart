@@ -34,7 +34,7 @@ class UIData {
 
   //images
   static const String imageDir = "assets/images";
-  static const String pkImage = "$imageDir/pk.jpg";
+  static const String pkImage = "assets/food/breakfast.jpg";
   static const String profileImage = "$imageDir/profile.jpg";
   static const String blankImage = "$imageDir/blank.jpg";
   static const String dashboardImage = "$imageDir/dashboard.jpg";

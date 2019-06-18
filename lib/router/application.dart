@@ -8,4 +8,6 @@ class Application {
   // 控制器
   static TabController tabController;
 
+  // 主页面的globalkey
+  static GlobalKey<ScaffoldState> mainPageKey;
 }

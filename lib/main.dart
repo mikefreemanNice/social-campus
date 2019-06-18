@@ -34,16 +34,15 @@ class MyApp extends StatelessWidget {
       title: 'Social Campus',
       theme: new ThemeData(
         primaryColor: ThemeColor,
-        backgroundColor: Color(0xFFEFEFEF),
-        accentColor: Color(0xFF888888),
+        backgroundColor: ThemeColor,
+        accentColor: ThemeColor,
         // textTheme: TextTheme(
         //   //设置Material的默认字体样式
         //   body1: TextStyle(color: Color(0xFF888888), fontSize: 16.0),
         // ),
-        // iconTheme: IconThemeData(
-        //   color: ThemeColor,
-        //   size: 40.0,
-        // ),
+        iconTheme: IconThemeData(
+          color: ThemeColor,
+        ),
       ),
       home: Scaffold(body: welcomePage()),
       onGenerateRoute: Application.router.generator,
